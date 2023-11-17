@@ -7,14 +7,14 @@ import {Icon} from 'leaflet'
 const MapView = () => {
     return (
         <>
-<MapContainer className='h-96 w-3/4 rounded-lg' center={[-7.767959, 110.378545]} zoom={14} scrollWheelZoom={true}>
+<MapContainer className='h-full grow rounded-lg' center={[-7.767959, 110.378545]} zoom={14} scrollWheelZoom={true}>
   <TileLayer
     attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
     url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
     />
-  <Marker position={[-7.767959, 110.378545]} icon={new Icon({iconUrl: '/iconmarker.png', iconAnchor: [12, 41]})} >
+  <Marker position={[-7.767959, 110.378545]} icon={new Icon({iconUrl: '/iconmarker.gif', iconSize: [32,32], iconAnchor: [16, 25]})} >
     <Popup>
-      For nothing. <br /> yes it is.
+      Balairung <br /> Universitas Gadjah Mada
     </Popup>
   </Marker>
 </MapContainer>

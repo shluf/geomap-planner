@@ -5,7 +5,7 @@ export const siteConfig = {
 	description: "Planning your mission on geographic map.",
 	navItems: [
 		{
-			label: "Home",
+			label: "Missions",
 			href: "/",
 		},
 		{
@@ -15,24 +15,16 @@ export const siteConfig = {
 		],
 	navMenuItems: [
 		{
-			label: "Profile",
-			href: "/profile",
+			label: "Missions",
+			href: "/",
 		},
 		{
-			label: "Dashboard",
-			href: "/dashboard",
-		},
-		{
-			label: "Projects",
-			href: "/projects",
+			label: "About",
+			href: "/about",
 		},
 		{
 			label: "Team",
 			href: "/team",
-		},
-		{
-			label: "Calendar",
-			href: "/calendar",
 		},
 		{
 			label: "Settings",
@@ -42,13 +34,9 @@ export const siteConfig = {
 			label: "Help & Feedback",
 			href: "/help-feedback",
 		},
-		{
-			label: "Logout",
-			href: "/logout",
-		},
 	],
 	links: {
-		github: "https://github.com/nextui-org/nextui",
+		github: "https://github.com/shluf/geomap-planner",
 		twitter: "https://twitter.com/getnextui",
 		docs: "https://nextui.org",
 		discord: "https://discord.gg/9b6yyZKmH4",
