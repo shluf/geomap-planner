@@ -17,7 +17,7 @@ export default function Home() {
 			<div className="md:hidden py-4">
 				<Snippet hideSymbol hideCopyButton variant="flat">
 					<span>
-						<Code color="danger">Important</Code> Please, change to desktop mode for open the map 
+						<Code color="warning">Important</Code> Please, switch to desktop mode to open the map 
 					</span>
 				</Snippet>
 			</div>
@@ -27,7 +27,7 @@ export default function Home() {
 					href={siteConfig.links.docs}
 					className={buttonStyles({ color: "primary", radius: "full", variant: "shadow" })}
 				>
-					Create New Mission
+					Create New
 				</Link>
 			</div>
 			<div className="mt-8">
