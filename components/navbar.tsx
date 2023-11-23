@@ -130,7 +130,13 @@ export const Navbar = () => {
 										? "danger"
 										: "foreground"
 								}
-								href="#"
+								href={
+									index === 0
+										? "/"
+										: index === 1
+										? "/about"
+										: "#"
+								}
 								size="lg"
 							>
 								{item.label}

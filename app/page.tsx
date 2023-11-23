@@ -1,13 +1,16 @@
 import { Link } from "@nextui-org/link";
 import { Snippet } from "@nextui-org/snippet";
 import { Code } from "@nextui-org/code"
+import {Button} from "@nextui-org/button";
 import { button as buttonStyles } from "@nextui-org/theme";
 import { siteConfig } from "@/config/site";
 import { title, subtitle } from "@/components/primitives";
 import { GithubIcon } from "@/components/icons";
 import {Divider} from "@nextui-org/divider";
+import {Card, CardHeader, CardBody, CardFooter} from "@nextui-org/card"
 import MapView from "../components/map"
 import MissionList from "@/components/mission/config-mission";
+import ExportButton from "@/components/map/exportButton";
 
 export default function Home() {
 	return (
@@ -21,23 +24,21 @@ export default function Home() {
 					</span>
 				</Snippet>
 			</div>
-			<div className="flex gap-3">
-				<Link
-					isExternal
-					href={siteConfig.links.docs}
-					className={buttonStyles({ color: "primary", radius: "full", variant: "shadow" })}
-				>
-					Create New
-				</Link>
+			<Card className="p-3 flex item-center justify-center">
+			<div className="flex justify-center gap-3">
+			<ExportButton />
+			<Button variant="ghost" color="danger">Delete</Button>
 			</div>
-			<div className="mt-8">
+			<Divider className="mt-3" />
+			<div className="mt-5">
 				<Snippet hideSymbol hideCopyButton variant="flat">
 					<span>
 						List of all Mission :
 					</span>
 				</Snippet>
 			</div>
-			<Divider className="w-1/2" />
+			</Card>
+			{/* <Divider className="w-1/2" /> */}
 			<MissionList />
 
 		</section>

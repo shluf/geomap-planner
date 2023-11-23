@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "@nextui-org/button": "2.0.26",
+    "@nextui-org/card": "^2.0.24",
     "@nextui-org/code": "2.0.24",
     "@nextui-org/divider": "^2.0.25",
     "@nextui-org/input": "2.1.16",
@@ -39,6 +40,7 @@
     "react-dom": "18.2.0",
     "react-leaflet": "^4.2.1",
     "react-leaflet-draw": "^0.20.4",
+    "react-leaflet-fullscreen": "^4.1.1",
     "tailwind-variants": "^0.1.18",
     "tailwindcss": "3.3.5",
     "typescript": "5.0.4"
