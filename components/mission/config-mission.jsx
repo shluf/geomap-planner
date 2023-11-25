@@ -85,7 +85,7 @@ export default function MissionList() {
               }
             }
           ]
-        });
+        }); console.log((selectedItem));
         // Perform your desired action with geometry here
       } else {
         alert(key); // Fallback to alert if no geometry property is found

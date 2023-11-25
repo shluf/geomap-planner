@@ -1,9 +1,8 @@
 'use client'
-
 import React, { useState } from 'react';
-import { MapContainer, Marker, Popup, TileLayer, useMapEvents, FeatureGroup, GeoJSON } from 'react-leaflet'
+import { MapContainer, Marker, Popup, TileLayer, useMapEvents, FeatureGroup } from 'react-leaflet'
 import 'leaflet/dist/leaflet.css'
-import {Icon} from 'leaflet'
+import {Icon, geoJSON} from 'leaflet'
 
 import { FullscreenControl } from "react-leaflet-fullscreen";
 import "react-leaflet-fullscreen/styles.css";
@@ -19,14 +18,13 @@ import exportButton from './exportButton';
 const MapView = () => {
   const [geoJSONLayers, setGeoJSONLayers] = useState([]);
   const [selectedFeature, setSelectedFeature] = useState(null);
-
-  const onEachFeature = (feature, layer) => {
-    layer.on({
-      click: () => {
-        setSelectedFeature(feature);
-      },
-    });
-  };
+  // const onEachFeature = (feature, layer) => {
+  //   layer.on({
+  //     click: () => {
+  //       setSelectedFeature(feature);
+  //     },
+  //   });
+  // };
  
   // Icon Marker
   const customIcon = new L.Icon({
@@ -36,33 +34,62 @@ const MapView = () => {
     popupAnchor: [0, -32],
   });
 
+  const handleClick = () =>{
+    var misi = prompt('Mission Name: ');
+    getMisi[0](misi)
+    getMisi[1](true)
+    console.log(misi);
+}
+
+//---------JANGAN DIUBAH-----------
+const [lat, setLat] = useState(0)
+const [lng, setLng] = useState(0)
+  const geoJSON = {
+    'type': "FeatureCollection",
+    'features': [
+      {
+        'type': "Feature",
+        'geometry': {
+          type: "Point",
+          coordinates: [lng, lat],
+        },
+        'properties': {
+          name: "Clicked Point",
+        },
+      },
+    ],
+  };
+
   const handleMapClick = (e) => {
     const { lat, lng } = e.latlng;
-    // console.log(`Koordinat yang diclick: ${lat}, ${lng}`);
-    
-    const geoJSON = {
-      type: 'FeatureCollection',
-      features: [
-        {
-          type: 'Feature',
-          geometry: {
-            type: 'Point',
-            coordinates: [lng, lat],
-          },
-          properties: {
-            name: 'Clicked Point',
-          },
-        },
-      ],
-    };
-    // console.log("GeoJSON: ", geoJSON);
+    console.log(`Koordinat yang diclick: ${lat}, ${lng}`);
+
+    setLat(lat)
+    setLng(lng)
   };
+//Save to Backend (WORK)
+const saveGeoJSON = async() => {
+  try {
+    const response = await fetch("http://localhost:5000/api/mission", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ geoJSON }),
+    })
+  console.log(geoJSON);
+  } catch(error){
+    console.log(error);
+  }
+}
+
   // Komponen yang menangani peristiwa klik pada peta
   const MyClickHandler = () => {
     useMapEvents({
       click: handleMapClick,
     });
   }
+//-------------END----------------
 
     const _onEdited = e => {
       let numEdited = 0;
@@ -151,7 +178,8 @@ const MapView = () => {
           )} */}
 
         </MapContainer>
-          <button onClick={exportGeoJSON}>Export</button>
+          <button onClick={saveGeoJSON}>Export</button>
+          <button onClick={handleClick}>Nama</button>
           </>
     )
 }
