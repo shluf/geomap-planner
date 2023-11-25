@@ -1,6 +1,12 @@
 'use client'
+<<<<<<< HEAD
 import React, { useState } from 'react';
 import { MapContainer, Marker, Popup, TileLayer, useMapEvents, FeatureGroup } from 'react-leaflet'
+=======
+
+import React, { useState, useEffect } from 'react';
+import { MapContainer, Marker, Popup, TileLayer, useMapEvents, FeatureGroup, GeoJSON } from 'react-leaflet'
+>>>>>>> 1505933cca61491564187f1def2a2d0f72e269d4
 import 'leaflet/dist/leaflet.css'
 import {Icon, geoJSON} from 'leaflet'
 
@@ -10,14 +16,21 @@ import "react-leaflet-fullscreen/styles.css";
 //DRAW
 import { EditControl } from 'react-leaflet-draw'
 import 'leaflet-draw/dist/leaflet.draw.css'
-import exportGeoJSON from './export';
 
 //EXPORT
-import exportButton from './exportButton';
+import exportButton from './saveButton';
 
-const MapView = () => {
+const MapView = ({selectedGeoJSON}) => {
+  // Tempat menyimpan GEOJSON yang ada di map menjadi array 
   const [geoJSONLayers, setGeoJSONLayers] = useState([]);
+  
+  // Tempat menyimpan GEOJSON sementara untuk ditampilkan ke map
   const [selectedFeature, setSelectedFeature] = useState(null);
+<<<<<<< HEAD
+=======
+
+  // Membuat fungsi pada setiap feature untuk GEOJSON
+>>>>>>> 1505933cca61491564187f1def2a2d0f72e269d4
   // const onEachFeature = (feature, layer) => {
   //   layer.on({
   //     click: () => {
@@ -96,13 +109,13 @@ const saveGeoJSON = async() => {
       e.layers.eachLayer(layer => {
         numEdited += 1;
       });
+      console.log(`_onEdited: edited ${numEdited} layers`, e);
       
+
       // Menambahkan Geojson yang telah diedit
       setGeoJSONLayers(
         e.layers.getLayers().map((layer) => layer.toGeoJSON())
       );
-      console.log(`_onEdited: edited ${numEdited} layers`, e);
-      // this._onChange();
     };
   
     const _onCreated = e => {
@@ -111,15 +124,14 @@ const saveGeoJSON = async() => {
 
       // Menambahkan Geojson yang telah dibuat
       if (type === 'polygon' || type === 'marker' || type === 'polyline') {
-      // Simpan layer yang baru dibuat
-      setGeoJSONLayers((prevLayers) => [...prevLayers, e.layer.toGeoJSON()]);
+      setGeoJSONLayers((prevLayers) => [...prevLayers, e.layer.toGeoJSON()]); 
     };
       // Do whatever else you need to. (save to db; etc)
-
-      // this._onChange();
     };
 
     const _onDeleted = e => {
+      // YANG UPDATE LAYER SETELAH DIHAPUS BELUM BISA DITAMBAHIN KE GEOJSON
+
       // let numDeleted = 0;
       // e.layers.eachLayer(layer => {
       //   numDeleted += 1;
@@ -135,14 +147,26 @@ const saveGeoJSON = async() => {
       // this._onChange();
     };
 
+    // Menambahkan features dari mission list kedalam GeoJSON
+    useEffect(() => {
+      // Update GeoJSON layers when selectedGeoJSON changes
+      if (selectedGeoJSON) {
+        setGeoJSONLayers(selectedGeoJSON.features);
+      } else {
+        // Reset GeoJSON layers when selectedGeoJSON is null
+        setGeoJSONLayers([]);
+      }
+    }, [selectedGeoJSON]);
+
+    // Print semua GeoJSONLayer yang ada dimap
     const exportGeoJSON = () => {
-      // Log GeoJSON data to the console (you can modify this to save or send the data as needed)
       console.log(geoJSONLayers);
     };
-
+    
     return (
-      <>
-        <MapContainer className='h-full grow rounded-lg' center={[-7.767959, 110.378545]} zoom={14} scrollWheelZoom={true}>
+      <div className="hidden md:flex flex-col h-full w-full" >
+        <MapContainer className='h-full w-full rounded-lg' center={[-7.767959, 110.378545]} zoom={14} scrollWheelZoom={true}>
+        
         <MyClickHandler />
           <TileLayer
             attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
@@ -154,7 +178,11 @@ const saveGeoJSON = async() => {
             </Popup>
           </Marker>
           <FullscreenControl forceSeparateButton={true} />
+          
           <FeatureGroup >
+            {geoJSONLayers.map((layer, index) => (
+              <GeoJSON key={index} data={layer} />
+              ))}
                   <EditControl 
                     position="topright"
                     onEdited={_onEdited}
@@ -168,20 +196,18 @@ const saveGeoJSON = async() => {
                       },
                     }}
                   />
-                </FeatureGroup>
-          {/* {geoJSONLayers.map((layer, index) => (
-          <GeoJSON key={index} data={layer} />
-        ))} */}
-        
-          {/* {geoJSON && (
-            <GeoJSON data={geoJSON} onEachFeature={onEachFeature} />
-          )} */}
+          </FeatureGroup>
 
         </MapContainer>
+<<<<<<< HEAD
           <button onClick={saveGeoJSON}>Export</button>
           <button onClick={handleClick}>Nama</button>
           </>
+=======
+        <button onClick={exportGeoJSON}>Export</button>
+      </div>
+>>>>>>> 1505933cca61491564187f1def2a2d0f72e269d4
     )
-}
-
-export default MapView;
+  }
+  
+  export default MapView;
