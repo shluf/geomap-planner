@@ -13,9 +13,17 @@ import { EditControl } from 'react-leaflet-draw'
 import 'leaflet-draw/dist/leaflet.draw.css'
 
 //EXPORT
-import exportButton from './saveButton';
+import axios from 'axios';
 
 const MapView = ({selectedGeoJSON}) => {
+  // Icon Marker
+  const customIcon = new L.Icon({
+    iconUrl: '/iconmarker.gif',
+    iconSize: [32, 32], 
+    iconAnchor: [16, 32],
+    popupAnchor: [0, -32],
+  });
+
   // Tempat menyimpan GEOJSON yang ada di map menjadi array 
   const [geoJSONLayers, setGeoJSONLayers] = useState([]);
   
@@ -31,13 +39,17 @@ const MapView = ({selectedGeoJSON}) => {
   //   });
   // };
  
-  // Icon Marker
-  const customIcon = new L.Icon({
-    iconUrl: '/iconmarker.gif',
-    iconSize: [32, 32], 
-    iconAnchor: [16, 32],
-    popupAnchor: [0, -32],
-  });
+      // SEND TO SERVER
+      const exportGeoJSON = () => {
+        // Send GeoJSON data to the server using Axios
+        axios.post('http://localhost:5001/api/geojson', { type: 'FeatureCollection', features: geoJSONLayers })
+          .then((response) => {
+            console.log('GeoJSON data sent successfully:', response);
+          })
+          .catch((error) => {
+            console.error('Error sending GeoJSON data:', error);
+          });
+      };
 
   const handleMapClick = (e) => {
     const { lat, lng } = e.latlng;
@@ -86,9 +98,9 @@ const MapView = ({selectedGeoJSON}) => {
       // let layer = e.layer;
 
       // Menambahkan Geojson yang telah dibuat
-      if (type === 'polygon' || type === 'marker' || type === 'polyline') {
+      // if (type === 'polygon' || type === 'marker' || type === 'polyline') {
       setGeoJSONLayers((prevLayers) => [...prevLayers, e.layer.toGeoJSON()]); 
-    };
+    // };
       // Do whatever else you need to. (save to db; etc)
     };
 
@@ -114,17 +126,32 @@ const MapView = ({selectedGeoJSON}) => {
     useEffect(() => {
       // Update GeoJSON layers when selectedGeoJSON changes
       if (selectedGeoJSON) {
-        setGeoJSONLayers(selectedGeoJSON.features);
-      } else {
-        // Reset GeoJSON layers when selectedGeoJSON is null
-        setGeoJSONLayers([]);
-      }
+        setGeoJSONLayers(prevLayers => [...prevLayers, ...selectedGeoJSON.features])
+      } 
     }, [selectedGeoJSON]);
 
     // Print semua GeoJSONLayer yang ada dimap
-    const exportGeoJSON = () => {
-      console.log(geoJSONLayers);
+    // const exportGeoJSON = () => {
+    //   console.log(geoJSONLayers);
+    // };
+
+
+    const removeGeoJSONLayer = (layerName) => {
+      // Remove a GeoJSON layer from the state
+      setGeoJSONLayers((prevLayers) =>
+        prevLayers.filter((layer) => layer.name !== layerName)
+      );
     };
+  
+    const clearAllLayers = () => {
+      // Remove all GeoJSON layers from the state
+      setGeoJSONLayers([]);
+    };
+
+    // const someGeoJSONData = [geoJSONLayers];
+
+    // sendGeoJSONToServer(someGeoJSONData);
+
     
     return (
       <div className="hidden md:flex flex-col h-full w-full" >
@@ -135,17 +162,14 @@ const MapView = ({selectedGeoJSON}) => {
             attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
             url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
             />
-          <Marker position={[-7.767959, 110.378545]} icon={new Icon({iconUrl: '/iconmarker.gif', iconSize: [32,32], iconAnchor: [16, 32], popupAnchor: [0, -32]})} >
+          <Marker position={[-7.767959, 110.378545]} riseOnHover={true} icon={new Icon({iconUrl: '/iconmarker.gif', iconSize: [32,32], iconAnchor: [16, 32], popupAnchor: [0, -32]})} >
             <Popup>
               <b>Balairung</b> <br /> Universitas Gadjah Mada
             </Popup>
           </Marker>
-          <FullscreenControl forceSeparateButton={true} />
+          <FullscreenControl forceSeparateButton={true} position='topright' />
           
           <FeatureGroup >
-            {geoJSONLayers.map((layer, index) => (
-              <GeoJSON key={index} data={layer} />
-              ))}
                   <EditControl 
                     position="topright"
                     onEdited={_onEdited}
@@ -158,11 +182,16 @@ const MapView = ({selectedGeoJSON}) => {
                         icon: customIcon,
                       },
                     }}
-                  />
+                    />
+                    {geoJSONLayers.map((layer, index) => (
+                      <GeoJSON key={index} data={layer} />
+                      ))}
           </FeatureGroup>
 
         </MapContainer>
         <button onClick={exportGeoJSON}>Export</button>
+        <button onClick={() => removeGeoJSONLayer('Custom Layer')}>New</button>
+        <button onClick={clearAllLayers}>Clear</button>
       </div>
     )
   }

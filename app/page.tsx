@@ -17,7 +17,7 @@ export default function Home() {
 			
 		<section className="flex flex-col items-center justify-center w-full h-full gap-4">
 			<div className="md:hidden py-4">
-				<Snippet className="max-w-xs" hideSymbol hideCopyButton variant="flat">
+				<Snippet className="max-w-xs" hideSymbol variant="flat">
 					<span className="max-w-xs">
 						<Code color="warning">Important</Code> Map Hidden !
 					</span>
