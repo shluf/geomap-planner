@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import { MapContainer, Marker, Popup, TileLayer, useMapEvents, FeatureGroup, GeoJSON } from 'react-leaflet'
 import 'leaflet/dist/leaflet.css'
-import {Icon} from 'leaflet'
+import L, {Icon} from 'leaflet'
 import { Button } from "@nextui-org/button";
 
 import { FullscreenControl } from "react-leaflet-fullscreen";
@@ -69,7 +69,7 @@ const MapView = ({selectedGeoJSON}) => {
               headers: {
                 "Content-Type": "application/json",
               },
-              body: JSON.stringify({ extractGeoJSON }),
+              body: JSON.stringify({ extractedGeoJSON }),
             })
             console.log(response, 'GeoJSON data sent successfully:', extractedGeoJSON);
           } catch(error){
@@ -183,7 +183,7 @@ const MapView = ({selectedGeoJSON}) => {
     
     return (
       <div className="hidden md:flex flex-col h-full w-full" >
-        <MapContainer className='h-full w-full rounded-lg' center={[-7.767959, 110.378545]} zoom={14} scrollWheelZoom={true}>
+        <MapContainer className='h-full w-full rounded-lg' center={[-7.767959, 110.378545]} zoom={15} scrollWheelZoom={true}>
         
         <MyClickHandler />
           <TileLayer
@@ -217,7 +217,7 @@ const MapView = ({selectedGeoJSON}) => {
           </FeatureGroup>
 
         </MapContainer>
-        <div className='flex items-center justify-center gap-6 py-4'>
+        <div className='flex items-center justify-center gap-6 pt-4'>
         <Button  onPress={extractGeoJSON} color="primary" variant="solid">Export</Button>
         <Button  onPress={clearAllLayers} color="danger" variant="ghost">Clear</Button>
         </div>
