@@ -56,7 +56,7 @@ const MapView = ({selectedGeoJSON}) => {
           ...feature,
           properties: {
             ...feature.properties,
-            missionName: missionName,
+            mission: missionName,
           },
         })),
       };
@@ -69,9 +69,9 @@ const MapView = ({selectedGeoJSON}) => {
               headers: {
                 "Content-Type": "application/json",
               },
-              body: JSON.stringify({ extractedGeoJSON }),
+              body: JSON.stringify({ geoJSONWithMissionName }),
             })
-            console.log(response, 'GeoJSON data sent successfully:', extractedGeoJSON);
+            console.log('GeoJSON data sent successfully:', response, extractedGeoJSON, geoJSONWithMissionName);
           } catch(error){
             console.log(error);
           }
@@ -177,8 +177,8 @@ const MapView = ({selectedGeoJSON}) => {
       // Remove all GeoJSON layers from the state
       setGeoJSONLayers([]);
     };
+    console.log(geoJSONLayers)
 
-    // console.log(geoJSONLayers)
 
     
     return (
