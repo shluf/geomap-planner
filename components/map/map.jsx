@@ -45,7 +45,9 @@ const MapView = ({selectedGeoJSON}) => {
     });
 
     console.log('Extracted GeoJSON:', extractedGeoJSON);
-    
+
+
+    // MENAMBAHKAN NAMA MISI PADA SETIAP LAYER (BELUM WORK)
     const exportGeoJSON = (missionName) => {
       // Add mission name to each feature in the GeoJSON
       const geoJSONWithMissionName = {
@@ -60,7 +62,6 @@ const MapView = ({selectedGeoJSON}) => {
       };
 
       // SEND TO SERVER
-        
         const saveGeoJSON = async() => {
           try {
             const response = await fetch("http://localhost:5000/api/mission", {
@@ -77,7 +78,8 @@ const MapView = ({selectedGeoJSON}) => {
         }
         saveGeoJSON();
       };
-        const handleClick = () => {
+      
+      const handleClick = () => {
       var misi = prompt('Mission Name: ');
       if (misi) {
         exportGeoJSON(misi);
@@ -170,7 +172,7 @@ const MapView = ({selectedGeoJSON}) => {
       } 
     }, [selectedGeoJSON]);
 
-
+    // Menghapus semua Features didalam map
     const clearAllLayers = () => {
       // Remove all GeoJSON layers from the state
       setGeoJSONLayers([]);
