@@ -4,6 +4,7 @@ import React, { useState, useEffect } from 'react';
 import { MapContainer, Marker, Popup, TileLayer, useMapEvents, FeatureGroup, GeoJSON } from 'react-leaflet'
 import 'leaflet/dist/leaflet.css'
 import {Icon} from 'leaflet'
+import { Button } from "@nextui-org/button";
 
 import { FullscreenControl } from "react-leaflet-fullscreen";
 import "react-leaflet-fullscreen/styles.css";
@@ -12,8 +13,6 @@ import "react-leaflet-fullscreen/styles.css";
 import { EditControl } from 'react-leaflet-draw'
 import 'leaflet-draw/dist/leaflet.draw.css'
 
-//EXPORT
-import axios from 'axios';
 
 const MapView = ({selectedGeoJSON}) => {
   // Icon Marker
@@ -26,34 +25,78 @@ const MapView = ({selectedGeoJSON}) => {
 
   // Tempat menyimpan GEOJSON yang ada di map menjadi array 
   const [geoJSONLayers, setGeoJSONLayers] = useState([]);
-  
-  // Tempat menyimpan GEOJSON sementara untuk ditampilkan ke map
-  const [selectedFeature, setSelectedFeature] = useState(null);
 
-  // Membuat fungsi pada setiap feature untuk GEOJSON
-  // const onEachFeature = (feature, layer) => {
-  //   layer.on({
-  //     click: () => {
-  //       setSelectedFeature(feature);
-  //     },
-  //   });
-  // };
- 
-      // SEND TO SERVER
-      const exportGeoJSON = () => {
-        // Send GeoJSON data to the server using Axios
-        axios.post('http://localhost:5001/api/geojson', { type: 'FeatureCollection', features: geoJSONLayers })
-          .then((response) => {
-            console.log('GeoJSON data sent successfully:', response);
-          })
-          .catch((error) => {
-            console.error('Error sending GeoJSON data:', error);
-          });
+  // ===================Fungsi ekstraksi sekaligus export geojson====================
+
+  const extractGeoJSON = () => {
+    const extractedGeoJSON = {
+      type: 'FeatureCollection',
+      features: [],
+    };
+
+    geoJSONLayers.forEach((layer) => {
+      const extractedFeature = {
+        type: 'Feature',
+        geometry: layer.geometry,
+        properties: layer.properties,
       };
 
-  const handleMapClick = (e) => {
-    const { lat, lng } = e.latlng;
-    // console.log(`Koordinat yang diclick: ${lat}, ${lng}`);
+      extractedGeoJSON.features.push(extractedFeature);
+    });
+
+    console.log('Extracted GeoJSON:', extractedGeoJSON);
+    
+    const exportGeoJSON = (missionName) => {
+      // Add mission name to each feature in the GeoJSON
+      const geoJSONWithMissionName = {
+        type: 'FeatureCollection',
+        features: extractedGeoJSON.features.map((feature) => ({
+          ...feature,
+          properties: {
+            ...feature.properties,
+            missionName: missionName,
+          },
+        })),
+      };
+
+      // SEND TO SERVER
+        
+        const saveGeoJSON = async() => {
+          try {
+            const response = await fetch("http://localhost:5000/api/mission", {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify({ extractGeoJSON }),
+            })
+            console.log(response, 'GeoJSON data sent successfully:', extractedGeoJSON);
+          } catch(error){
+            console.log(error);
+          }
+        }
+        saveGeoJSON();
+      };
+        const handleClick = () => {
+      var misi = prompt('Mission Name: ');
+      if (misi) {
+        exportGeoJSON(misi);
+        // getMisi[0](misi);
+        // getMisi[1](true);
+        console.log(misi);
+      } else {
+        console.log('Mission name not provided.');
+      }
+    };
+    handleClick();
+  };
+
+  // ===================END====================
+    
+
+      const handleMapClick = (e) => {
+        const { lat, lng } = e.latlng;
+        // console.log(`Koordinat yang diclick: ${lat}, ${lng}`);
     
     const geoJSON = {
       type: 'FeatureCollection',
@@ -98,10 +141,7 @@ const MapView = ({selectedGeoJSON}) => {
       // let layer = e.layer;
 
       // Menambahkan Geojson yang telah dibuat
-      // if (type === 'polygon' || type === 'marker' || type === 'polyline') {
       setGeoJSONLayers((prevLayers) => [...prevLayers, e.layer.toGeoJSON()]); 
-    // };
-      // Do whatever else you need to. (save to db; etc)
     };
 
     const _onDeleted = e => {
@@ -130,27 +170,13 @@ const MapView = ({selectedGeoJSON}) => {
       } 
     }, [selectedGeoJSON]);
 
-    // Print semua GeoJSONLayer yang ada dimap
-    // const exportGeoJSON = () => {
-    //   console.log(geoJSONLayers);
-    // };
 
-
-    const removeGeoJSONLayer = (layerName) => {
-      // Remove a GeoJSON layer from the state
-      setGeoJSONLayers((prevLayers) =>
-        prevLayers.filter((layer) => layer.name !== layerName)
-      );
-    };
-  
     const clearAllLayers = () => {
       // Remove all GeoJSON layers from the state
       setGeoJSONLayers([]);
     };
 
-    // const someGeoJSONData = [geoJSONLayers];
-
-    // sendGeoJSONToServer(someGeoJSONData);
+    // console.log(geoJSONLayers)
 
     
     return (
@@ -189,9 +215,10 @@ const MapView = ({selectedGeoJSON}) => {
           </FeatureGroup>
 
         </MapContainer>
-        <button onClick={exportGeoJSON}>Export</button>
-        <button onClick={() => removeGeoJSONLayer('Custom Layer')}>New</button>
-        <button onClick={clearAllLayers}>Clear</button>
+        <div className='flex items-center justify-center gap-6 py-4'>
+        <Button  onPress={extractGeoJSON} color="primary" variant="solid">Export</Button>
+        <Button  onPress={clearAllLayers} color="danger" variant="ghost">Clear</Button>
+        </div>
       </div>
     )
   }

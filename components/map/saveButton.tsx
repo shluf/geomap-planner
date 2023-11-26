@@ -2,12 +2,9 @@
 
 import { Button } from "@nextui-org/button";
 
-const SaveButton = ({ geoJSONLayers }:any) => {
-	const exportGeoJSON = () => {
-		console.log(geoJSONLayers);
-	  };
+const SaveButton = () => {
 	return (
-		<Button  color="primary" variant="ghost">
+		<Button isDisabled color="primary" variant="solid">
 			Save
 		</Button>
 	);

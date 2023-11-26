@@ -1,5 +1,5 @@
 import { title } from "@/components/primitives";
-// import { MapView } from "@/components/map";
+
 
 export default function AboutPage() {
 	return (

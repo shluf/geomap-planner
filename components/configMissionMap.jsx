@@ -140,7 +140,7 @@ export default function MissionMap() {
         <Card className="p-3 flex item-center justify-center mb-4">
           <div className="flex justify-center gap-3">
           <SaveButton />
-            <Button variant="ghost" color="danger">Delete</Button>
+            <Button isDisabled variant="ghost" color="danger">Delete</Button>
           </div>
             <Divider className="mt-3" />
           <div className="mt-5">
