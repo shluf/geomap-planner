@@ -1,12 +1,7 @@
 'use client'
-<<<<<<< HEAD
-import React, { useState } from 'react';
-import { MapContainer, Marker, Popup, TileLayer, useMapEvents, FeatureGroup } from 'react-leaflet'
-=======
 
 import React, { useState, useEffect } from 'react';
 import { MapContainer, Marker, Popup, TileLayer, useMapEvents, FeatureGroup, GeoJSON } from 'react-leaflet'
->>>>>>> 1505933cca61491564187f1def2a2d0f72e269d4
 import 'leaflet/dist/leaflet.css'
 import {Icon, geoJSON} from 'leaflet'
 
@@ -26,11 +21,8 @@ const MapView = ({selectedGeoJSON}) => {
   
   // Tempat menyimpan GEOJSON sementara untuk ditampilkan ke map
   const [selectedFeature, setSelectedFeature] = useState(null);
-<<<<<<< HEAD
-=======
 
   // Membuat fungsi pada setiap feature untuk GEOJSON
->>>>>>> 1505933cca61491564187f1def2a2d0f72e269d4
   // const onEachFeature = (feature, layer) => {
   //   layer.on({
   //     click: () => {
@@ -47,16 +39,10 @@ const MapView = ({selectedGeoJSON}) => {
     popupAnchor: [0, -32],
   });
 
-  const handleClick = () =>{
-    var misi = prompt('Mission Name: ');
-    getMisi[0](misi)
-    getMisi[1](true)
-    console.log(misi);
-}
-
 //---------JANGAN DIUBAH-----------
 const [lat, setLat] = useState(0)
 const [lng, setLng] = useState(0)
+const [mission, setMission] = useState()
   const geoJSON = {
     'type': "FeatureCollection",
     'features': [
@@ -88,7 +74,7 @@ const saveGeoJSON = async() => {
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({ geoJSON }),
+      body: JSON.stringify({ mission, geoJSON }),
     })
   console.log(geoJSON);
   } catch(error){
@@ -162,7 +148,8 @@ const saveGeoJSON = async() => {
     const exportGeoJSON = () => {
       console.log(geoJSONLayers);
     };
-    
+
+
     return (
       <div className="hidden md:flex flex-col h-full w-full" >
         <MapContainer className='h-full w-full rounded-lg' center={[-7.767959, 110.378545]} zoom={14} scrollWheelZoom={true}>
@@ -199,14 +186,19 @@ const saveGeoJSON = async() => {
           </FeatureGroup>
 
         </MapContainer>
-<<<<<<< HEAD
-          <button onClick={saveGeoJSON}>Export</button>
-          <button onClick={handleClick}>Nama</button>
-          </>
-=======
-        <button onClick={exportGeoJSON}>Export</button>
-      </div>
->>>>>>> 1505933cca61491564187f1def2a2d0f72e269d4
+          <button onClick={saveGeoJSON}>Export to DB</button>
+          <div>
+            <h1>Mission Name : </h1>
+            <input
+                    type="mission"
+                    name="mission"
+                    placeholder="mission name"
+                    className="bg-white outline-none text-sm text-black flex-1"
+                    value={mission}
+                    onChange={(e) => setMission(e.target.value)}
+                  />
+          </div>
+          </div>
     )
   }
   
