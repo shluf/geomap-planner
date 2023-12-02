@@ -47,18 +47,20 @@ const MapView = ({selectedGeoJSON}) => {
     console.log('Extracted GeoJSON:', extractedGeoJSON);
 
 
-    // MENAMBAHKAN NAMA MISI PADA SETIAP LAYER (BELUM WORK)
+    // MENAMBAHKAN NAMA MISI PADA SETIAP LAYER
     const exportGeoJSON = (missionName) => {
       // Add mission name to each feature in the GeoJSON
       const geoJSONWithMissionName = {
-        type: 'FeatureCollection',
-        features: extractedGeoJSON.features.map((feature) => ({
-          ...feature,
-          properties: {
-            ...feature.properties,
-            mission: missionName,
-          },
-        })),
+        mission: missionName,
+        geojson: {
+          type: 'FeatureCollection',
+          features: extractedGeoJSON.features.map((feature) => ({
+            ...feature,
+            properties: {
+              ...feature.properties,
+            },
+          })),
+        }
       };
 
       // SEND TO SERVER
@@ -69,9 +71,9 @@ const MapView = ({selectedGeoJSON}) => {
               headers: {
                 "Content-Type": "application/json",
               },
-              body: JSON.stringify({ geoJSONWithMissionName }),
+              body: JSON.stringify( geoJSONWithMissionName ),
             })
-            console.log('GeoJSON data sent successfully:', response, extractedGeoJSON, geoJSONWithMissionName);
+            console.log('GeoJSON data sent successfully:', response, geoJSONWithMissionName);
           } catch(error){
             console.log(error);
           }
@@ -83,8 +85,6 @@ const MapView = ({selectedGeoJSON}) => {
       var misi = prompt('Mission Name: ');
       if (misi) {
         exportGeoJSON(misi);
-        // getMisi[0](misi);
-        // getMisi[1](true);
         console.log(misi);
       } else {
         console.log('Mission name not provided.');
@@ -95,34 +95,6 @@ const MapView = ({selectedGeoJSON}) => {
 
   // ===================END====================
     
-
-      const handleMapClick = (e) => {
-        const { lat, lng } = e.latlng;
-        // console.log(`Koordinat yang diclick: ${lat}, ${lng}`);
-    
-    const geoJSON = {
-      type: 'FeatureCollection',
-      features: [
-        {
-          type: 'Feature',
-          geometry: {
-            type: 'Point',
-            coordinates: [lng, lat],
-          },
-          properties: {
-            name: 'Clicked Point',
-          },
-        },
-      ],
-    };
-    // console.log("GeoJSON: ", geoJSON);
-  };
-  // Komponen yang menangani peristiwa klik pada peta
-  const MyClickHandler = () => {
-    useMapEvents({
-      click: handleMapClick,
-    });
-  }
 
     const _onEdited = e => {
       let numEdited = 0;
@@ -175,9 +147,9 @@ const MapView = ({selectedGeoJSON}) => {
     // Menghapus semua Features didalam map
     const clearAllLayers = () => {
       // Remove all GeoJSON layers from the state
+      console.log(geoJSONLayers)
       setGeoJSONLayers([]);
     };
-    console.log(geoJSONLayers)
 
 
     
@@ -185,7 +157,6 @@ const MapView = ({selectedGeoJSON}) => {
       <div className="hidden md:flex flex-col h-full w-full" >
         <MapContainer className='h-full w-full rounded-lg' center={[-7.767959, 110.378545]} zoom={15} scrollWheelZoom={true}>
         
-        <MyClickHandler />
           <TileLayer
             attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
             url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
