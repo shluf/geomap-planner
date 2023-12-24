@@ -7,7 +7,8 @@ import {Button} from "@nextui-org/button";
 import { Snippet } from "@nextui-org/snippet";
 import {Card} from "@nextui-org/card"
 
-import SaveButton from "@/components/map/saveButton";
+import {RefreshIcon} from "./refreshIcon"
+import EditButton from "@/components/map/editButton";
 import Mission from "./mission/mission";
 import MapView from "./map";
 
@@ -28,18 +29,45 @@ export default function MissionMap() {
       fetchGeoJSONData();
     }, []);
 
+    // Delete mission
+    const deleteMisssion = async (missionId) => {
+      try {
+        const res = await fetch(`http://localhost:5000/api/mission/${missionId}`, {
+          method: 'DELETE',
+        });
+  
+        if (res.ok) {
+          // Hapus misi dari state setelah berhasil dihapus dari server
+          // setAllMission((prevMissions) => prevMissions.filter((mission) => mission._id !== missionId));
+          console.log('Berhasil menghapus misi');
+        }
+      } catch (error) {
+        console.error('Gagal menghapus misi:', error);
+      }
+    };
+
     // Merefresh list mission
     const RefreshClick = () => {
       fetchGeoJSONData();
+
+      console.log(selectedValue)
+      console.log(selectedGeoJSONId)
     };
     
     // Menyimpan GeoJSON yang dipilih
     const [selectedGeoJSON, setSelectedGeoJSON] = useState(null);
+    // Menyimpan id GeoJSON yang dipilih
+    const [selectedGeoJSONId, setSelectedGeoJSONId] = useState([]);
+    
+    const selectedValue = React.useMemo(
+      () => Array.from(selectedGeoJSONId).join(", "),
+      [selectedGeoJSONId]
+    );
 
-    // Mengambil data dari GeoJSON dan merekonstruksinya kembali menjadi GEOJSON
+    // Mengambil data dari GeoJSON dan merekonstruksinya kembali menjadi GEOJSON serta menambahkan GEOJSON ID yang dipilih
     const handleAction = (key) => {
       const selectedGeojson = missions.find(mission => mission._id === key);
-  
+      
       if (selectedGeojson && selectedGeojson.geojson && selectedGeojson.geojson.features) {
         const selectedGeometry = selectedGeojson.geojson;
         setSelectedGeoJSON({
@@ -51,7 +79,10 @@ export default function MissionMap() {
             },
         })
         ),
-      })} else {
+      });
+      setSelectedGeoJSONId(key)
+      console.log("Selected GeoJSONId:", selectedGeoJSONId);
+    } else {
         alert("Mission not found");
       }
     };
@@ -69,9 +100,10 @@ export default function MissionMap() {
       <div className="flex-col">
         <Card className="p-3 flex item-center justify-center mb-4">
           <div className="flex justify-center gap-3">
-          <SaveButton />
-            <Button isDisabled variant="ghost" color="danger">Delete</Button>
+          <EditButton />
+            <Button onPress={() => deleteMisssion(selectedGeoJSONId)} variant="ghost" color="danger">Delete</Button>
             <Button isIconOnly onPress={RefreshClick} color="success" variant="solid" aria-label="Refresh">
+              <RefreshIcon />
             </Button>
           </div>
             <Divider className="mt-3" />
@@ -90,15 +122,22 @@ export default function MissionMap() {
             }}
             items={missions}
             aria-label="Dynamic Actions"
-            onAction={handleAction}
+            // onAction={handleAction}
+            selectionMode="single"
+            selectedKeys={selectedGeoJSONId}
+            onSelectionChange={setSelectedGeoJSONId}
             >
             {missions.map((item) => (
               <ListboxItem
                 key={item._id}
-                // color={item.key === "delete" ? "danger" : "default"}
+                description={item.dateCreated}
+                // color={item._id === null ? "danger" : "default"}
                 // className={item.key === "delete" ? "text-danger" : ""}
+                // onPress={() => setSelectedGeoJSONId(item._id)}
+                onPress={() => handleAction(item._id)}
                 >
                 {item.mission}
+                
               </ListboxItem>
             ))}
           </Listbox>
