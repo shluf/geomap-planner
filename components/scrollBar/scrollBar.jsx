@@ -1,6 +1,6 @@
 import React from "react";
 import {ScrollShadow} from "@nextui-org/scroll-shadow";
-import {Content} from "./Content";
+import {Content} from "./content";
   
 export default function ScrollBar() {
   return (
