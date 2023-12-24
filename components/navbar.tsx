@@ -60,7 +60,7 @@ export const Navbar = () => {
 						<p className="font-bold text-inherit">Geomap Planner</p>
 					</NextLink>
 				</NavbarBrand>
-				<ul className="hidden lg:flex gap-4 justify-start ml-2">
+				<ul className="hidden sm:flex gap-4 justify-start ml-2">
 					{siteConfig.navItems.map((item) => (
 						<NavbarItem key={item.href}>
 							<NextLink
@@ -95,7 +95,7 @@ export const Navbar = () => {
 					<ThemeSwitch />
 				</NavbarItem>
 				<NavbarItem className="hidden lg:flex">{searchInput}</NavbarItem>
-				<NavbarItem className="hidden md:flex">
+				{/* <NavbarItem className="hidden md:flex">
 					<Button
             isExternal
 						as={Link}
@@ -106,7 +106,7 @@ export const Navbar = () => {
 					>
 						Create New
 					</Button>
-				</NavbarItem>
+				</NavbarItem> */}
 			</NavbarContent>
 
 			<NavbarContent className="sm:hidden basis-1 pl-4" justify="end">
@@ -130,7 +130,13 @@ export const Navbar = () => {
 										? "danger"
 										: "foreground"
 								}
-								href="#"
+								href={
+									index === 0
+										? "/"
+										: index === 1
+										? "/about"
+										: "#"
+								}
 								size="lg"
 							>
 								{item.label}
