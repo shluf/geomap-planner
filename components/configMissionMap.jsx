@@ -17,7 +17,7 @@ export default function MissionMap() {
     const [missions, setMissions] = useState([]);
     const fetchGeoJSONData = async () => {
       try {
-        const response = await fetch("http://localhost:5000/api/mission");
+        const response = await fetch("https://teal-extinct-kitten.cyclic.app/api/mission");
         const data = await response.json();
         setMissions(data);
       } catch (error) {
@@ -32,7 +32,7 @@ export default function MissionMap() {
     // Delete mission
     const deleteMisssion = async (missionId) => {
       try {
-        const res = await fetch(`http://localhost:5000/api/mission/${missionId}`, {
+        const res = await fetch(`https://teal-extinct-kitten.cyclic.app/api/mission/${missionId}`, {
           method: 'DELETE',
         });
   

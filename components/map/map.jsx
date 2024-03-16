@@ -66,7 +66,7 @@ const MapView = ({selectedGeoJSON}) => {
       // SEND TO SERVER
         const saveGeoJSON = async() => {
           try {
-            const response = await fetch("http://localhost:5000/api/mission", {
+            const response = await fetch("https://teal-extinct-kitten.cyclic.app/api/mission", {
               method: "POST",
               headers: {
                 "Content-Type": "application/json",
